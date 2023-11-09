@@ -7,8 +7,9 @@ import SearchBar from './components/SearchBar/SearchBar'
 import './App.css'
 
 function App() {
-  const [movie, setMovie] = useState({})
-  const [searchMovieName, setSearchMovieName] = useState('wedding crashers')
+  const [movie, setMovie] = useState({});
+  const [searchMovieName, setSearchMovieName] = useState('wedding crashers');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log('USE EFFECT IS RUNNING')
@@ -20,6 +21,7 @@ function App() {
       // travel all the way to the omdb database and back before we have data
       
       try {
+        setLoading(true)
         const response = await fetch(endpoint)
         const body = await response.json(); // <- .json() from fetch and changes the json
         // into a javascript object
@@ -27,8 +29,10 @@ function App() {
         // because it takes time in computer world to convert a string into an object
         console.log(body)
         setMovie(body)
+        setLoading(false)
       } catch(err) {
         console.log(err)
+        setLoading(false)
       }
     }
 
@@ -41,8 +45,9 @@ function App() {
 
   return (
     <>
-      <SearchBar />
-      <MovieDetails movie={movie}/>
+      <SearchBar setSearchMovieName={setSearchMovieName}/>
+      {loading ? <h1>Loading...</h1> : <MovieDetails movie={movie} />}
+    
     </>
   )
 }
